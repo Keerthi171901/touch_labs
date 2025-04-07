@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
 
 
-class BikeClubHomePage extends StatefulWidget {
-  const BikeClubHomePage({Key? key}) : super(key: key);
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<BikeClubHomePage> createState() => _BikeClubHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
   bool _showBanner = true;
@@ -19,24 +18,7 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-
-    // Listen for tab changes
-    _tabController.addListener(() {
-      setState(() {});
-    });
-
-    // Show/hide banner based on scroll position
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels > 150 && _showBanner) {
-        setState(() {
-          _showBanner = false;
-        });
-      } else if (_scrollController.position.pixels <= 150 && !_showBanner) {
-        setState(() {
-          _showBanner = true;
-        });
-      }
-    });
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
@@ -46,31 +28,36 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
     super.dispose();
   }
 
+  void _scrollListener() {
+    // You can add scroll listener logic here if needed
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
         controller: _scrollController,
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
-            // App Bar
             SliverAppBar(
-              backgroundColor: Colors.red,
-              centerTitle: true,
               pinned: true,
-              floating: true,
+              centerTitle: true,
+              backgroundColor: Colors.red,
+              elevation: 4,
               title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: () {},
-                    child: const Icon(Icons.menu, color: Colors.white,weight: 24,),
+                    child: const Icon(Icons.menu, color: Colors.white, size: 24),
                   ),
-                  const SizedBox(width: 16),
                   const Text(
                     'keerthi',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
                 ],
@@ -82,9 +69,8 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
                     borderRadius: BorderRadius.circular(8),
                     child: Image.asset(
                       'assets/hpday.png',
-                      width: 80,
-                      height: 80,
-                      // Use a placeholder method if the asset isn't available
+                      width: 70,
+                      height: 70,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           width: 40,
@@ -95,7 +81,7 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
                               'HP\nPAY',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
+                                fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.center,
@@ -106,9 +92,10 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
                     ),
                   ),
                 ),
-                Icon(Icons.notifications_none,
-                color: Colors.white,
-                weight: 24,),
+                IconButton(
+                  icon: const Icon(Icons.notifications_none, color: Colors.white, size: 24),
+                  onPressed: () {},
+                ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16, left: 8),
                   child: ElevatedButton(
@@ -120,13 +107,14 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
                     child: const Text(
                       'SOS',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -134,220 +122,31 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
               ],
             ),
 
-            // Conditional Banner
+
             if (_showBanner)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      Container(
-                        height: 250,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/m3.jpg'),
-                            fit: BoxFit.cover,
-                            // Fallback if asset isn't available
-                            onError: (exception, stackTrace) {},
-                          ),
-                          color: Colors.grey.shade700,
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(
-                                color: Colors.black.withOpacity(0.4),
-                              ),
-                            ),
-                            Stack(
-                              children: [
-                                // Background image
-                                Container(
-                                  height: 250,
-                                  width: double.infinity,
-                                  child: Image.asset(
-                                    'assets/m3.jpg',  // Your background image path
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                // Dark overlay for better text readability
-                                Container(
-                                  height: 100,
-                                  width: double.infinity,
-                                  color: Colors.black.withOpacity(0.4),
-                                ),
-                                // Content row
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Left text
-                                      Row(
-                                        children: [
-
-                                          const Text(
-                                            '8 DayBike Trip To LEH LADAK',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      // Right container with price
-                                      Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                          decoration: BoxDecoration(
-                                            color: Colors.yellow,
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              // Image.asset(
-                                              //   'assets/mtouch2.jpg',  // Your price icon image path
-                                              //   width: 20,
-                                              //   height: 20,
-                                              // ),
-                                              const SizedBox(width: 4),
-                                              const Text(
-                                                'Register Now',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                      _buildBannerCard(
+                        imagePath: 'assets/m3.jpg',
+                        title: '8 DayBike Trip To LEH LADAK',
+                        actionText: 'Register Now',
                       ),
-                      SizedBox(height: 15,),
-                      Container(
-                        height: 250,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/m4.jpg'),
-                            fit: BoxFit.cover,
-                            // Fallback if asset isn't available
-                            onError: (exception, stackTrace) {},
-                          ),
-                          color: Colors.grey.shade700,
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(
-                                color: Colors.black.withOpacity(0.4),
-                              ),
-                            ),
-                            Stack(
-                              children: [
-                                // Background image
-                                Container(
-                                  height: 250,
-                                  width: double.infinity,
-                                  child: Image.asset(
-                                    'assets/m4.jpg',  // Your background image path
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                // Dark overlay for better text readability
-                                Container(
-                                  height: 100,
-                                  width: double.infinity,
-                                  color: Colors.black.withOpacity(0.4),
-                                ),
-                                // Content row
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Left text
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-
-                                          Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Column(
-                                              children: [
-                                                const Text(
-                                                  'HAYABUSA',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  '2019 HYDERABAD RIDERS MEETUP',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.normal,
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      // Right container with price
-                                      Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                          decoration: BoxDecoration(
-                                            color: Colors.yellow,
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              // Image.asset(
-                                              //   'assets/mtouch2.jpg',  // Your price icon image path
-                                              //   width: 20,
-                                              //   height: 20,
-                                              // ),
-                                              const SizedBox(width: 4),
-                                              const Text(
-                                                '2000-8000 INR',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                      const SizedBox(height: 15),
+                      _buildBannerCard(
+                        imagePath: 'assets/m4.jpg',
+                        title: 'HAYABUSA',
+                        subtitle: '2019 HYDERABAD RIDERS MEETUP',
+                        actionText: '2000-8000 INR',
+                        isSecondCard: true,
                       ),
                     ],
                   ),
                 ),
               ),
 
-            // Tab Bar
             SliverPersistentHeader(
               delegate: _SliverAppBarDelegate(
                 TabBar(
@@ -362,6 +161,8 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
                     Tab(text: 'MARKET'),
                     Tab(text: 'GARAGE'),
                   ],
+                  labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
                 ),
               ),
               pinned: true,
@@ -370,218 +171,124 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
         },
         body: TabBarView(
           controller: _tabController,
+          physics: const BouncingScrollPhysics(),
           children: [
-            // RIDES Tab
             _buildRidesTab(),
-
-            // STORIES Tab
             _buildStoriesTab(),
-
-            // MARKET Tab
             _buildMarketTab(),
-
-            // GARAGE Tab
             _buildGarageTab(),
           ],
         ),
       ),
-      floatingActionButton: _buildFloatingActionButton(),
     );
   }
 
-  Widget? _buildFloatingActionButton() {
-    if (_tabController.index == 1 || _tabController.index == 2) {
-      return Container(
-        height: 130,
-        width: 50,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(200, 60, 30, 30),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Icon(Icons.more_horiz, color: Colors.white),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Icon(Icons.cut_outlined, color: Colors.white),
-            ),
-          ],
-        ),
-      );
-    }
-    return null;
-  }
-
-  Widget _buildRidesTab() {
-    return ListView(
-      padding: const EdgeInsets.all(0),
-      children: [
-        _buildRideCard(
-          title: 'ride to nandi hills',
-          riderName: 'manish surapaneni',
-          bikeBrand: 'Ducati',
-          distance: '900 km',
-          date: 'July 20 2024',
-          location: 'hyderabad',
-          coRiders: '12',
-        ),
-        _buildRideCard(
-          title: 'ride to cochi hills',
-          riderName: 'manish surapaneni',
-          bikeBrand: 'Ducati',
-          distance: '900 km',
-          date: 'July 20 2024',
-          location: 'hyderabad',
-          coRiders: '12',
-        ),
-        _buildRideCard(
-          title: 'ride to vayanad hills',
-          riderName: 'manish surapaneni',
-          bikeBrand: 'Ducati',
-          distance: '900 km',
-          date: 'July 20 2024',
-          location: 'hyderabad',
-          coRiders: '12',
-        ),
-        _buildRideCard(
-          title: 'ride to kerala hills',
-          riderName: 'manish surapaneni',
-          bikeBrand: 'Ducati',
-          distance: '900 km',
-          date: 'July 20 2024',
-          location: 'hyderabad',
-          coRiders: '12',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRideCard({
+  Widget _buildBannerCard({
+    required String imagePath,
     required String title,
-    required String riderName,
-    required String bikeBrand,
-    required String distance,
-    required String date,
-    required String location,
-    required String coRiders,
+    String? subtitle,
+    required String actionText,
+    bool isSecondCard = false,
   }) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
+    return Container(
+      height: 250,
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
+        image: DecorationImage(
+          image: AssetImage(imagePath),
+          fit: BoxFit.cover,
+        ),
+        color: Colors.grey.shade700,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.black.withOpacity(0.4),
               ),
-              image: DecorationImage(
-                image: AssetImage('assets/mtouch2.jpg'),
-                fit: BoxFit.cover,
-                // Fallback for asset not available
-                onError: (exception, stackTrace) {},
-              ),
-              color: Colors.amber.shade100,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 22,
-                      backgroundColor: Colors.grey.shade300,
-                      child: const Icon(
-                        Icons.person_outline,
-                        color: Colors.indigo,
-                        size: 22,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          riderName,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                if (isSecondCard)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Title and Subtitle
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
+                          if (subtitle != null)
+                            Text(
+                              subtitle,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12,
+                              ),
+                            ),
+                        ],
+                      ),
+                      // Invite Button
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        Text(
-                          bikeBrand,
+                        child: const Text(
+                          'Invite',
                           style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
                           ),
                         ),
-                      ],
+                      ),
+                    ],
+                  )
+                else
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    const Spacer(),
-                    Text(
-                      'Co Riders: $coRiders',
-                      style: TextStyle(
+                  ),
+
+                // Bottom Right Register Button
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.yellow,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      actionText,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                         fontSize: 14,
-                        color: Colors.grey.shade700,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(Icons.route, color: Colors.red, size: 20),
-                    const SizedBox(width: 4),
-                    Text(
-                      distance,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Icon(Icons.calendar_today, color: Colors.red, size: 18),
-                    const SizedBox(width: 4),
-                    Text(
-                      date,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Icon(Icons.location_on, color: Colors.red, size: 20),
-                    const SizedBox(width: 4),
-                    Text(
-                      location,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -591,88 +298,69 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
     );
   }
 
-  Widget _buildMarketTab() {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: 20,
-      itemBuilder: (context, index) {
-        return Container(
-          height: 80,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: Text(
-              'Market Item $index',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
-  Widget _buildGarageTab() {
+  Widget _buildRidesTab() {
     return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: 20,
-      itemBuilder: (context, index) {
-        return Container(
-          height: 80,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: Text(
-              'Garage Item $index',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildStoriesTab() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       itemCount: 10,
       itemBuilder: (context, index) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFEE5E5),
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Title ${index + 1}',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                child: Image.asset(
+                  'assets/mtouch2.jpg',
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum.',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade800,
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Bike Ride Adventure',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Join us for an exciting bike ride through scenic routes and beautiful landscapes.',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          '₹2,000 - ₹5,000',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text('Join Now',style: TextStyle(color: Colors.white),),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -681,26 +369,239 @@ class _BikeClubHomePageState extends State<BikeClubHomePage> with SingleTickerPr
       },
     );
   }
+
+  Widget _buildStoriesTab() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(8),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 0.8,
+      ),
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Image.asset(
+                    index % 2 == 0 ? 'assets/m3.jpg' : 'assets/m4.jpg',
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Story ${index + 1}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Amazing riding experience...',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMarketTab() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    index % 2 == 0 ? 'assets/m3.jpg' : 'assets/m4.jpg',
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Bike Accessories',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Premium quality bike parts and accessories',
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            '₹1,500',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.shopping_cart),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildGarageTab() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(8),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 0.82,
+      ),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image Section
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    index % 2 == 0 ? 'assets/m3.jpg' : 'assets/m4.jpg',
+                    height: 85,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 6),
+
+                // Text Content
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bike Model ${index + 1}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const Text(
+                      '2023 Model | 5000 km',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const Spacer(), // Pushes the bottom row to bottom
+
+                // Price and Favorite
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      '₹85,000',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.favorite_border, size: 18),
+                      onPressed: () {},
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar _tabBar;
+  final TabBar tabBar;
 
-  _SliverAppBarDelegate(this._tabBar);
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
+  _SliverAppBarDelegate(this.tabBar);
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Colors.white,
-      child: _tabBar,
+      child: tabBar,
     );
   }
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
 
   @override
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
